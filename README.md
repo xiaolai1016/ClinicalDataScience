@@ -1,1 +1,1 @@
-# ClinicalDataScience
+### This is my SQL practice from the  Clinical Data Science Specialisation course(https://github.com/xiaolai1016/ClinicalDataScience/assets/49321420/0f828386-53b4-4384-aa59-ca9f6278c133). ALl codings were conducted in Google BigQuery
