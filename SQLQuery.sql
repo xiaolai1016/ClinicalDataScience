@@ -21,6 +21,19 @@ FROM
 WHERE 
     gender = 'F';
 
+--Retrieve all female patients with their date of birth and date of death. The date formate like this: MM-DD-YYYY
+SELECT 
+    PatientName, 
+    FORMAT(DateOfBirth, 'MM-dd-yyyy') AS FormattedDOB,
+    FORMAT(DateOfDeath, 'MM-dd-yyyy') AS FormattedDOD
+FROM 
+    Patients
+WHERE 
+    Gender = 'Female' 
+    AND DateOfBirth IS NOT NULL
+    AND DateOfDeath IS NOT NULL;
+
+
 --Find Patients who were first admitted when they were over 20 years old. list the first admission time in this format: mm/dd YYYY
 SELECT 
     p.patient_id, 
@@ -50,9 +63,11 @@ AND ethnicity = 'WHITE' OR ethnicity = 'BLACK/AFRICAN AMERICAN';
 --Retrieve all female patients with their date of birth and date of death.
 SELECT gender, dob, dod FROM Patients
 WHERE gender = 'F';
+
 --Find the count of patients for each gender.
 SELECT  gender, COUNT(gender) AS gender_count FROM Patients
 GROUP BY gender;
+
 --List all unique admission types from the Admission table.
 SELECT DISTINCT admission_type FROM Admission;
 
@@ -60,18 +75,22 @@ SELECT DISTINCT admission_type FROM Admission;
 SELECT COUNT(*) FROM Patients
 INNER JOIN Admission ON Patients.subject_id = Admission.subject_id
 WHERE expire_flag = '1' AND admission_type = 'EMERGENCY';
+
 --Retrieve the subject_id and diagnosis of patients who were admitted after the year 2000 and were discharged before the year 2010.
 SELECT a.subject_id, d.icd9_code FROM Admission a
 INNER JOIN Diagnosis d ON a.subject_id = d.subject_id
 WHERE YEAR(a.admittime) >= 2130 AND YEAR(a.dischtime) <= 2190;
+
 --List the subject_id of patients who have more than 3 diagnoses in the Diagnosis table.
 SELECT d.subject_id, COUNT(d.row_id) AS NoOfDiagnoses FROM Diagnosis d
 GROUP BY d.subject_id
 HAVING COUNT(d.row_id)  > 3;
+
 --Retrieve the subject_id, dob and admittime for patients who were admitted on their birthday.
 SELECT a.subject_id, p.dob, a.admittime FROM Patients p
 INNER JOIN Admission a ON p.subject_id = a.subject_id
 WHERE CAST(a.admittime AS DATE) != CAST(p.dob AS DATE);
+
 --Find the average age of patients at the time of their first admission.
 WITH FirstAdmission AS (
     SELECT p.subject_id, 
@@ -130,6 +149,7 @@ SELECT COUNT(*) AS MonCOUNT FROM Admission
 WHERE YEAR(admittime) = 2171
 GROUP BY MONTH(admittime)
 ORDER BY MonCOUNT DESC;
+
 --Retrieve patients who were admitted more than once in a span of 30 days.
 WITH RepeatedAdmissions AS (
     SELECT a1.subject_id, a1.admittime AS FirstAdmission, a2.admittime AS SecondAdmission
@@ -148,6 +168,7 @@ SELECT subject_id
 FROM [NHS].[dbo].[Admission]
 GROUP BY subject_id
 HAVING COUNT(hadm_id) = 1;
+
 --For each insurance type, find the percentage of patients who expired (hospital_expire_flag set to 1) during their hospital stay.
 
 
