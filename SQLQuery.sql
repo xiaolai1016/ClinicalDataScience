@@ -11,6 +11,29 @@ SELECT gender, dob, admission_type, ethnicity FROM Patients
 INNER JOIN Admission ON Patients.subject_id = Admission.subject_id
 WHERE gender = 'f';
 
+--Retrieve all female patients with their date of birth and date of death. The date formate like this: MM/DD/YYYY
+SELECT 
+    subject_id, 
+    FORMAT(CONVERT(datetime, dob, 103), 'MM/dd/yyyy') AS dob, 
+    FORMAT(CONVERT(datetime, dod, 103), 'MM/dd/yyyy') AS dod
+FROM 
+    patients 
+WHERE 
+    gender = 'F';
+
+--Find Patients who were first admitted when they were over 20 years old. list the first admission time in this format: mm/dd YYYY
+SELECT 
+    p.patient_id, 
+    FORMAT(MIN(a.admission_time), 'MM/dd yyyy') as first_admission_date
+FROM 
+    patients p
+JOIN 
+    admissions a ON p.patient_id = a.patient_id
+WHERE 
+    DATEDIFF(YEAR, p.dob, MIN(a.admission_time)) > 20
+GROUP BY 
+    p.patient_id;
+
 SELECT gender, dob, admission_type, ethnicity, dischtime FROM Patients
 INNER JOIN Admission ON Patients.subject_id = Admission.subject_id
 WHERE  dischtime BETWEEN '2124-01-01 00:00:00' AND '2186-12-31 23:59:59';
